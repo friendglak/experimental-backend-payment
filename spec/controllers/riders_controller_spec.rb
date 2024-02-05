@@ -36,11 +36,17 @@ RSpec.describe RidersController, type: :controller do
   describe 'POST /riders/:id/ride_requests' do
     let(:rider) { create(:rider, name: 'Rider Request', email: 'riderrequest@example.com') }
     let(:driver) do
-      create(:driver, name: 'Driver Request', email: 'driverrequest@example.com', latitude: 1.0, longitude: 1.0,
+      create(:driver, name: 'Driver Request', email: 'driverrequest@example.com', latitude: 1231.0, longitude: 112314.0,
                       available: true)
     end
 
-    let(:ride_details) { { current_location: '123 Main St', destination: '456 Elm St' } }
+    let(:ride_details) do
+      {
+        latitude: 4.710989, # Use realistic latitude and longitude values
+        longitude: -74.072092,
+        destination: '456 Elm St'
+      }
+    end
 
     before do
       allow(RideService).to receive(:assign_driver).and_return(driver)
