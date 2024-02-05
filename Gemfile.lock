@@ -22,6 +22,7 @@ GEM
     ast (2.4.2)
     base64 (0.2.0)
     bigdecimal (3.1.6)
+    bigdecimal (3.1.6-java)
     concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
     crack (0.4.6)
@@ -75,6 +76,7 @@ GEM
       dry-schema (>= 1.12, < 2)
       zeitwerk (~> 2.6)
     eventmachine (1.2.7)
+    eventmachine (1.2.7-java)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
     faker (3.2.3)
@@ -83,6 +85,7 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.7.1)
+    json (2.7.1-java)
     language_server-protocol (3.17.0.3)
     minitest (5.21.2)
     multi_json (1.15.0)
@@ -93,9 +96,11 @@ GEM
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
+    pg (1.5.4)
     pg (1.5.4-x64-mingw-ucrt)
     public_suffix (5.0.4)
     racc (1.7.3)
+    racc (1.7.3-java)
     rack (2.2.8)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
@@ -164,6 +169,7 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
+  universal-java-21
   x64-mingw-ucrt
 
 DEPENDENCIES
