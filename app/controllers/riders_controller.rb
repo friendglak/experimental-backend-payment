@@ -33,7 +33,12 @@ class RidersController < Sinatra::Base
   post '/riders/:id/ride_requests' do
     content_type :json
     request_body = JSON.parse(request.body.read)
-    puts request_body
+
+    validation = Validations::RideRequestSchema.new.call(request_body)
+    if validation.failure?
+      status 400
+      return { error: validation.errors.to_h }.to_json
+    end
 
     begin
       latitude = request_body['latitude'].to_f

@@ -3,13 +3,12 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-# Service to create a payment source in Wompis API
-
+# Service to create a payment source
 class PaymentService
-  WOMPI_BASE_URL = 'https://sandbox.wompi.co/v1'.freeze
+  BASE_URL = "#{ENV['SANDBOX_URL']}"
 
   def self.get_acceptance_token
-    uri = URI("#{WOMPI_BASE_URL}/merchants/#{ENV['WOMPI_PUBLIC_KEY']}")
+    uri = URI("#{BASE_URL}/merchants/#{ENV['PUBLIC_KEY']}")
     request = Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json')
     response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
       http.request(request)
@@ -27,10 +26,10 @@ class PaymentService
     acceptance_token = get_acceptance_token
     return { error: 'Failed to get acceptance token' } if acceptance_token.nil?
 
-    uri = URI("#{WOMPI_BASE_URL}/payment_sources")
+    uri = URI("#{BASE_URL}/payment_sources")
     request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json',
 
-                                       'Authorization' => "Bearer #{ENV['WOMPI_PRIVATE_KEY']}")
+                                       'Authorization' => "Bearer #{ENV['PRIVATE_KEY']}")
 
     request_body = {
       type: 'CARD',
