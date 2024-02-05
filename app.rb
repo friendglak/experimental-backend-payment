@@ -4,6 +4,7 @@ require_relative 'app/controllers/drivers_controller'
 
 # Class to handle the main application
 class RideHailingApp < Sinatra::Base
+  set :port, ENV['PORT'] || 4567
   set :bind, '0.0.0.0'
   # Configuraciones de Sinatra, como sesiones, middleware, etc.
   configure :production do
