@@ -11,6 +11,7 @@ gem 'rspec', '~> 3.0', require: false
 gem 'rubocop'
 gem 'sequel'
 gem 'sinatra'
+gem 'sinatra-contrib'
 gem 'sinatra-cors'
 gem 'thin', '~> 1.5'
 

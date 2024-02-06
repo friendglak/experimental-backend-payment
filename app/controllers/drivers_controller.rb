@@ -6,7 +6,6 @@ require_relative '../services/ride_service'
 class DriversController < Sinatra::Base
   post '/drivers/:id/finish_ride' do
     content_type :json
-
     begin
       request_payload = JSON.parse(request.body.read)
       ride_id = request_payload['ride_id']
