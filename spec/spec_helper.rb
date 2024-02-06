@@ -12,7 +12,7 @@ Dotenv.load
 Bundler.require(:default, :test)
 
 # Connect to test database
-TEST_DB = Sequel.connect(ENV['TEST_DATABASE_URL'])
+TEST_DB = Sequel.connect(ENV['DATABASE_URL'])
 
 # Require models
 require_relative '../app/models/driver'
