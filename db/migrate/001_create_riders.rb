@@ -6,6 +6,7 @@ Sequel.migration do
       String :email, unique: true, null: false
       Float :latitude
       Float :longitude
+      String :payment_source_id
     end
   end
 end
