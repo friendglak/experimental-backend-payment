@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'json'
 require_relative '../services/ride_service'
+require_relative '../services/payment_service'
 
 # Controller to handle driver actions
 class DriversController < Sinatra::Base
@@ -21,7 +22,25 @@ class DriversController < Sinatra::Base
         return { error: 'Driver not associated with this ride' }.to_json
       end
 
-      cost = RideService.calculate_ride_cost(ride)
+      cost = RideService.calculate_ride_cost(ride).round
+      amount_in_cents = cost * 100
+
+      customer_email = ride.rider.email
+      payment_source_id = ride.rider.payment_source_id
+      reference = "Ride#{ride_id}-#{DateTime.now.to_s}"
+
+      transaction_result = PaymentService.create_transaction(
+        amount_in_cents, # Monto en centavos
+        'COP', # Moneda
+        customer_email,
+        payment_source_id,
+        reference
+      )
+
+      if transaction_result['error'] && !transaction_result['error'].empty?
+        status 500
+        return { error: 'Failed to create payment transaction', details: transaction_result['error'] }.to_json
+      end
 
       ride.update(
         status: 'completed',

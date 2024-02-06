@@ -3,6 +3,7 @@ require 'json'
 require_relative '../validations/payment_method_validation'
 require_relative '../validations/ride_request_validation'
 require_relative '../services/payment_service'
+require_relative '../services/rider_service'
 
 # Controller to handle rider actions
 class RidersController < Sinatra::Base
@@ -47,7 +48,6 @@ class RidersController < Sinatra::Base
       rider_id = params[:id]
       rider = Rider.find(id: rider_id)
 
-      # Verifica si el rider existe
       if rider.nil?
         status 404
         return { error: "Rider with id #{rider_id} not found" }.to_json
@@ -65,6 +65,23 @@ class RidersController < Sinatra::Base
     rescue StandardError => e
       status 500
       puts "error: #{e.message.to_json}"
+    end
+  end
+
+  post '/riders/:id/add_payment_method' do
+    content_type :json
+
+    request_payload = JSON.parse(request.body.read)
+    payment_token = request_payload['payment_token']
+    customer_email = request_payload['customer_email']
+
+    begin
+      rider = RiderService.add_payment_method(params[:id], payment_token, customer_email)
+      status 200
+      { message: 'Payment method added successfully' }.to_json
+    rescue => e
+      status 500
+      { error: 'Internal server error', details: e.message }.to_json
     end
   end
 end

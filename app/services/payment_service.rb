@@ -6,6 +6,8 @@ require 'json'
 # Service to create a payment source
 class PaymentService
   BASE_URL = "#{ENV['SANDBOX_URL']}"
+  PRIVATE_KEY = "#{ENV['PRIVATE_KEY']}"
+  INTEGRITY_KEY = "#{ENV['INTEGRITY_KEY']}"
 
   def self.get_acceptance_token
     uri = URI("#{BASE_URL}/merchants/#{ENV['PUBLIC_KEY']}")
@@ -29,11 +31,11 @@ class PaymentService
     uri = URI("#{BASE_URL}/payment_sources")
     request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json',
 
-                                       'Authorization' => "Bearer #{ENV['PRIVATE_KEY']}")
+                                       'Authorization' => "Bearer #{PRIVATE_KEY}")
 
     request_body = {
       type: 'CARD',
-      token: 'tok_test_92306_42ca087A2428217d9CD7f50d1a7a309e', # Use the token provided by /v1/tokens/cards
+      token: 'tok_test_92306_8c7AEd3FB5c5dBEeB1c91E7dB2F834f7', # Use the token provided by /v1/tokens/cards
       customer_email: 'pepito_perez@example.com',
       acceptance_token: acceptance_token
     }.to_json
@@ -58,4 +60,32 @@ class PaymentService
   rescue JSON::ParserError => e
     { error: "Failed to parse response: #{e.message}" }
   end
+
+  def self.create_transaction(amount_in_cents, currency, customer_email, payment_source_id, reference)
+    signature = generate_signature(reference, amount_in_cents, currency, INTEGRITY_KEY)
+    body = {
+      amount_in_cents: amount_in_cents,
+      currency: currency,
+      customer_email: customer_email,
+      payment_source_id: payment_source_id,
+      reference: reference,
+      payment_method: {
+        installments: 1 # Ajustar según necesidad
+      },
+      signature: signature
+    }.to_json
+
+    uri = URI("#{BASE_URL}/transactions")
+    request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json', 'Authorization' => "Bearer #{PRIVATE_KEY}")
+    request.body = body
+
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(request) }
+    JSON.parse(response.body)
+  end
+
+  def self.generate_signature(reference, amount_in_cents, currency, integrity_secret)
+    concatenated_string = "#{reference}#{amount_in_cents}#{currency}#{integrity_secret}"
+    Digest::SHA256.hexdigest(concatenated_string)
+  end
+
 end
